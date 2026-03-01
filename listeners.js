@@ -1,4 +1,3 @@
-// Function to get the current active drawing layer based on the tab
 function getActiveLayer() {
   const layerId = `draw-layer-${currentTabId.replace(/ /g, '-')}`;
   return document.getElementById(layerId) || stageCanvas;
@@ -34,9 +33,7 @@ fieldCanvas.addEventListener("pointermove", (event) => {
     if (target && target !== fieldCanvas && target.id !== "field-background") {
       let isRobot = target.closest('.robot-group');
       let isSlot = target.closest('.slot-group');
-      if (!isRobot && !isSlot) {
-        target.remove();
-      }
+
     }
   }
 });
@@ -63,14 +60,17 @@ fieldCanvas.addEventListener("pointerdown", (event) => {
         makeDragable(currentArrow);
       }
     } else if (currentCanvasMode == CanvasMode.PEN) {
-      currentPenPath = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      currentPenPath.setAttribute("stroke", selectedColor);
-      currentPenPath.setAttribute("fill", "none");
-      currentPenPath.setAttribute("points", position.x + "," + position.y + " ");
-      currentPenPath.setAttribute("stroke-width", 4);
-      currentPenPath.setAttribute("stroke-linecap", "round");
-      activeLayer.appendChild(currentPenPath);
-      makeDragable(currentPenPath);
+      // Fix: Don't start path if clicking on a robot (logic handled in selectElement)
+      if (!event.target.closest('.robot-group')) {
+        currentPenPath = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+        currentPenPath.setAttribute("stroke", selectedColor);
+        currentPenPath.setAttribute("fill", "none");
+        currentPenPath.setAttribute("points", position.x + "," + position.y + " ");
+        currentPenPath.setAttribute("stroke-width", 4);
+        currentPenPath.setAttribute("stroke-linecap", "round");
+        activeLayer.appendChild(currentPenPath);
+        makeDragable(currentPenPath);
+      }
     }
   } else {
     document.getElementById("sidebar").classList.replace("open", "closed");

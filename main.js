@@ -5,7 +5,6 @@ const background = document.getElementById("field-background");
 const colorPicker = document.getElementById("robot-color-picker");
 const timerDisplay = document.getElementById("timer-display");
 
-// ---------- Constants & State ---------- \\
 var currentRobotSize = 60;
 var currentTextSize = 14;
 const CLICK_THRESHOLD = 200; 
@@ -175,7 +174,7 @@ function createRobotAt(x, y) {
     let teamNumText = document.createElementNS("http://www.w3.org/2000/svg", "text");
     teamNumText.innerHTML = document.getElementById(driveId)?.value || (isRed ? robotList.length + 4 : robotList.length + 1);
     teamNumText.style = `font-family: monospace; font-weight: 900; pointer-events: none; font-size: ${currentTextSize}px;`;
-    teamNumText.setAttribute("fill", "#FFF");
+    teamNumText.setAttribute("fill", isRed ? "#F00" : "#00F");
     teamNumText.setAttribute("dominant-baseline", "middle");
     teamNumText.setAttribute("text-anchor", "middle");
     robotGroup.appendChild(teamNumText);
