@@ -43,10 +43,10 @@ fieldCanvas.addEventListener("pointermove", (event) => {
       // בגלל שאצבע היא עבה, נבדוק 5 נקודות מסביב למרכז המגע כדי לא לפספס קווים דקים
       const offsets = [
         { dx: 0, dy: 0 },
-        { dx: 10, dy: 10 },
-        { dx: -10, dy: -10 },
-        { dx: 10, dy: -10 },
-        { dx: -10, dy: 10 }
+        { dx: 40, dy: 10 },
+        { dx: -40, dy: -40 },
+        { dx: 40, dy: -40 },
+        { dx: -40, dy: 40 }
       ];
 
       offsets.forEach(offset => {
