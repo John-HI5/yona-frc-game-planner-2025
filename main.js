@@ -31,8 +31,8 @@ var clickCount = 0;
 
 var pendingSlot = null;
 const slotCoords = [
-    {x: 145, y: 270}, {x: 145, y: 490}, {x: 145, y: 880},
-    {x: 2400, y: 420}, {x: 2400, y: 807}, {x: 2400, y: 1040}
+    {x: 145, y: 270-27}, {x: 145, y: 490-27}, {x: 145, y: 880-27-27-15},
+    {x: 2350, y: 420-27}, {x: 2350, y: 807-27}, {x: 2350, y: 1040-27}
 ];
 
 var currentTabId = 'AUTO';
@@ -141,7 +141,7 @@ function toggleFullScreen() {
         }
     }
 }
-
+/*
 function initSlots() {
     slotsLayer.innerHTML = "";
     slotCoords.forEach(coord => {
@@ -176,6 +176,60 @@ function initSlots() {
         });
     });
 }
+*/
+
+function initSlots() {
+    slotsLayer.innerHTML = "";
+    
+    // קבלת הממדים האמיתיים של הרקע כרגע
+    const bgRect = background.getBoundingClientRect();
+    const originalWidth = 2500; // רוחב התמונה המקורית שעלפיה קבעת את הקואורדינטות
+    const originalHeight = 1200; // גובה התמונה המקורית (שנה לערך המדויק שלך אם שונה)
+    
+    // חישוב היחס בין הגודל המקורי לגודל המוצג כרגע
+    const scaleX = bgRect.width / originalWidth;
+    const scaleY = bgRect.height / originalHeight;
+
+    slotCoords.forEach(coord => {
+        let group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        
+        // מיקום העיגול מוכפל ביחס של המסך הנוכחי
+        const posX = coord.x * scaleX;
+        const posY = coord.y * scaleY;
+        
+        group.setAttribute("transform", `translate(${posX}, ${posY})`);
+        group.classList.add("slot-group");
+        
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        // גם הרדיוס צריך להשתנות לפי גודל המסך
+        circle.setAttribute("r", 40 * scaleX); 
+        circle.setAttribute("fill", "rgba(255,255,255,0.2)");
+        circle.setAttribute("stroke", "white");
+        circle.setAttribute("stroke-width", "2");
+        
+        // ... (שאר הקוד של הטקסט נשאר זהה)
+        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("fill", "white");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "middle");
+        text.style.fontFamily = "monospace";
+        text.style.fontWeight = "900";
+        text.style.fontSize = (currentTextSize * scaleX) + "px";
+        text.style.pointerEvents = "none";
+
+        group.appendChild(circle);
+        group.appendChild(text);
+        slotsLayer.appendChild(group);
+
+        group.addEventListener("pointerdown", (e) => {
+            e.stopPropagation();
+            if (pendingSlot) pendingSlot.classList.remove("slot-active");
+            pendingSlot = group;
+            group.classList.add("slot-active");
+        });
+    });
+}
+
 
 function captureCurrentPositions() {
     let allBots = [...redRobots, ...blueRobots];
