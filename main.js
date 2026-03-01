@@ -270,7 +270,7 @@ function addImage(xpos, ypos, angle, src, size, parent) {
 function setMode(mode) {
     currentCanvasMode = mode;
     document.querySelectorAll('#tools button').forEach(b => b.classList.remove("active", "other-active"));
-    const modeIds = ["", "pen", "drag-tool", "", "robot-button", "piece-button", "arrow-tool"];
+    const modeIds = ["delete-tool", "pen", "drag-tool", "", "robot-button", "piece-button", "arrow-tool"];
     const activeBtn = document.getElementById(modeIds[mode]);
     if (activeBtn) activeBtn.classList.add("active");
 }

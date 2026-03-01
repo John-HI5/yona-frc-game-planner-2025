@@ -129,7 +129,7 @@
 
     <div id="tools" class="button-bar">
       <button id="drag-tool" class="non-active" onclick="setMode(CanvasMode.DRAG)" style="background-image: url('icons/select.svg')"></button>
-      <button class="non-active" onclick="setMode(CanvasMode.DELETE)" style="background-image: url(icons/delete.svg)"></button>
+      <button **id="delete-tool"** class="non-active" onclick="setMode(CanvasMode.DELETE)" style="background-image: url(icons/delete.svg)"></button>
       <button id="pen" class="non-active" onclick="setMode(CanvasMode.PEN)" style="background-image: url(icons/pen.svg)"></button>
       <button id="arrow-tool" class="non-active" onclick="setMode(CanvasMode.ARROW)" style="background-image: url(icons/arrow.svg)"></button>
       <button id="piece-button" class="non-active" onclick="setMode(CanvasMode.PIECE)" style="background-image: url('25assets/display-coral.svg');"></button>
@@ -201,20 +201,10 @@
           <input type="range" id="text-size-slider" min="8" max="32" value="14" oninput="updateAllTextSizes(this.value)" style="width: 90%;">
         </div>
   
-        <div class="options">
-          <button onclick="clearField()">Clear Stage</button>
-          <button onclick="resetPlanner()">Reset Canvas</button>
-        </div>
+
   
-        <div class="color-selector" style="padding-bottom: 75px; text-align: center;">
-          <span class="selected-color" onclick="changeColor('#FFF')" style="background-color: white;"></span>
-          <span class="non-selected-color" onclick="changeColor('#F00')" style="background-color: red;"></span>
-          <span class="non-selected-color" onclick="changeColor('#00F')" style="background-color: blue;"></span>
-          <span class="non-selected-color" onclick="changeColor('#FF0')" style="background-color: yellow;"></span>
-          <span class="non-selected-color" onclick="changeColor('#ffa500')" style="background-color: #ffa500;"></span>
-          <span class="non-selected-color" onclick="changeColor('#56ea16')" style="background-color: #56ea16;"></span>
-        </div>
-        <span id="version">v4.0.1</span>
+
+        <span id="version">v- אמא שלך</span>
     </div>
 
     <input type="color" id="robot-color-picker" style="display: none; position: absolute; z-index: 999; width: 40px; height: 40px;">
