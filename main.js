@@ -178,7 +178,7 @@ function initSlots() {
         });
     });
 }
-*/
+
 
 function initSlots() {
     slotsLayer.innerHTML = "";
@@ -231,6 +231,57 @@ function initSlots() {
         });
     });
 }
+*/
+function initSlots() {
+    slotsLayer.innerHTML = "";
+    const bgRect = background.getBoundingClientRect();
+    
+    // וודא שהמספרים האלו הם הרזולוציה המדויקת של קובץ ה-PNG שלך
+    const originalWidth = 2500; 
+    const originalHeight = 1185; // שיניתי מ-1200 ל-1185 כדי שיתאים למגרש FRC סטנדרטי
+
+    const scaleX = bgRect.width / originalWidth;
+    const scaleY = bgRect.height / originalHeight;
+
+    slotCoords.forEach(coord => {
+        let group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        
+        const posX = coord.x * scaleX;
+        const posY = coord.y * scaleY;
+        
+        group.setAttribute("transform", `translate(${posX}, ${posY})`);
+        group.classList.add("slot-group");
+        
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", 40 * scaleX); 
+        circle.setAttribute("fill", "rgba(255,255,255,0.2)");
+        circle.setAttribute("stroke", "white");
+        circle.setAttribute("stroke-width", "2");
+        
+        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("fill", "white");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "middle");
+        text.style.fontFamily = "monospace";
+        text.style.fontWeight = "900";
+        // הוספתי scaleX גם לגודל הטקסט כדי שיקטן בטאבלט
+        text.style.fontSize = (currentTextSize * scaleX) + "px"; 
+        text.style.pointerEvents = "none";
+
+        group.appendChild(circle);
+        group.appendChild(text);
+        slotsLayer.appendChild(group);
+
+        group.addEventListener("pointerdown", (e) => {
+            e.stopPropagation();
+            if (pendingSlot) pendingSlot.classList.remove("slot-active");
+            pendingSlot = group;
+            group.classList.add("slot-active");
+        });
+    });
+}
+
+
 
 
 function captureCurrentPositions() {

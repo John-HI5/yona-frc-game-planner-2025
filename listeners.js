@@ -33,24 +33,29 @@ fieldCanvas.addEventListener("pointermove", (event) => {
         currentPenPath.getAttribute("points") + position.x + " " + position.y + " "
       );
     }
-  } else if (currentCanvasMode == CanvasMode.DELETE) {
-    // מחיקה בטאץ' או עכבר לחוץ
-    if (event.buttons !== 0 || event.pointerType === 'touch') {
-      let target = document.elementFromPoint(event.clientX, event.clientY);
-      if (target && target !== fieldCanvas && target.id !== "field-background") {
-        let isRobot = target.closest('.robot-group');
-        let isSlot = target.closest('.slot-group');
-        
-        // מחיקה רק של אלמנטים גרפיים (לא רובוטים/סלוטים)
-        if (!isRobot && !isSlot) {
-            const validTags = ["path", "polyline", "line", "image", "circle"];
-            if (validTags.includes(target.tagName.toLowerCase())) {
-                target.remove();
-            }
-        }
+
+
+    
+  } 
+  else if (currentCanvasMode == CanvasMode.DELETE) {
+      if (event.buttons !== 0 || event.pointerType === 'touch') {
+          let target = document.elementFromPoint(event.clientX, event.clientY);
+          if (target && target !== fieldCanvas && target.id !== "field-background") {
+              let isRobot = target.closest('.robot-group');
+              let isSlot = target.closest('.slot-group');
+              
+              if (!isRobot && !isSlot) {
+                  // מוחק רק אלמנטים של ציור (path, line, image)
+                  const tags = ["path", "polyline", "line", "image", "circle"];
+                  if (tags.includes(target.tagName.toLowerCase())) {
+                      target.remove();
+                  }
+              }
+          }
       }
-    }
   }
+
+
 }, { passive: false });
 
 fieldCanvas.addEventListener("pointerdown", (event) => {
