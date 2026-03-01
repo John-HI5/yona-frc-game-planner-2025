@@ -35,6 +35,7 @@ fieldCanvas.addEventListener("pointermove", (event) => {
     }
   } 
   
+  
   // --- כלי המחיקה המשופר לטאץ' ---
   else if (currentCanvasMode == CanvasMode.DELETE) {
     // בטאץ' pointerType הוא 'touch', בעכבר אנחנו בודקים אם הלחצן השמאלי לחוץ
