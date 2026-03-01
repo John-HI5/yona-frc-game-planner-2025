@@ -10,9 +10,11 @@ var currentPolygon = null;
 fieldCanvas.addEventListener("pointermove", (event) => {
   let position = getMousePosition(event);
   
-  // מניעת גלילה בטאץ' בזמן עבודה על המגרש
+  // 1. מניעת גלילה וזום של הדפדפן בזמן עבודה (קריטי לטאבלט)
   if (currentCanvasMode !== CanvasMode.DRAG || selectedElement) {
-    if (event.pointerType === 'touch') event.preventDefault();
+    if (event.pointerType === 'touch') {
+        event.preventDefault();
+    }
   }
 
   if (currentCanvasMode == CanvasMode.ARROW) {
@@ -22,40 +24,49 @@ fieldCanvas.addEventListener("pointermove", (event) => {
     }
   } else if (currentCanvasMode == CanvasMode.DRAG) {
     if (selectedElement) {
-      event.preventDefault(); 
       transform.setTranslate(position.x - offset.x, position.y - offset.y);
     }
   } else if (currentCanvasMode == CanvasMode.PEN) {
     if (currentPenPath) {
-      event.preventDefault(); 
       currentPenPath.setAttribute(
         "points",
         currentPenPath.getAttribute("points") + position.x + " " + position.y + " "
       );
     }
-
-
-    
   } 
+  
+  // --- כלי המחיקה המשופר לטאץ' ---
   else if (currentCanvasMode == CanvasMode.DELETE) {
-      if (event.buttons !== 0 || event.pointerType === 'touch') {
-          let target = document.elementFromPoint(event.clientX, event.clientY);
-          if (target && target !== fieldCanvas && target.id !== "field-background") {
-              let isRobot = target.closest('.robot-group');
-              let isSlot = target.closest('.slot-group');
-              
-              if (!isRobot && !isSlot) {
-                  // מוחק רק אלמנטים של ציור (path, line, image)
-                  const tags = ["path", "polyline", "line", "image", "circle"];
-                  if (tags.includes(target.tagName.toLowerCase())) {
-                      target.remove();
-                  }
-              }
+    // בטאץ' pointerType הוא 'touch', בעכבר אנחנו בודקים אם הלחצן השמאלי לחוץ
+    if (event.buttons !== 0 || event.pointerType === 'touch') {
+      
+      // בגלל שאצבע היא עבה, נבדוק 5 נקודות מסביב למרכז המגע כדי לא לפספס קווים דקים
+      const offsets = [
+        { dx: 0, dy: 0 },
+        { dx: 10, dy: 10 },
+        { dx: -10, dy: -10 },
+        { dx: 10, dy: -10 },
+        { dx: -10, dy: 10 }
+      ];
+
+      offsets.forEach(offset => {
+        let target = document.elementFromPoint(event.clientX + offset.dx, event.clientY + offset.dy);
+        
+        if (target && target !== fieldCanvas && target.id !== "field-background") {
+          let isRobot = target.closest('.robot-group');
+          let isSlot = target.closest('.slot-group');
+          
+          if (!isRobot && !isSlot) {
+            // מוחק את כל סוגי האלמנטים של הציור
+            const validTags = ["path", "polyline", "line", "image", "circle", "ellipse"];
+            if (validTags.includes(target.tagName.toLowerCase())) {
+                target.remove();
+            }
           }
-      }
+        }
+      });
+    }
   }
-
-
 }, { passive: false });
 
 fieldCanvas.addEventListener("pointerdown", (event) => {
