@@ -124,8 +124,8 @@ function spawnInitialRobots() {
     const width = bgRect.width;
     const height = bgRect.height;
     const yRatios = [0.23, 0.50, 0.76];
-    const redXRatio = 0.15;            
-    const blueXRatio = 0.85;           
+    const redXRatio = 0.15;            
+    const blueXRatio = 0.85;           
 
     allianceColor = Alliance.RED;
     yRatios.forEach(yRatio => createRobotAt(width * redXRatio, height * yRatio));
@@ -196,6 +196,15 @@ function selectElement(evt) {
     evt.stopPropagation();
     let target = evt.currentTarget;
 
+    // טיפול במחיקה בלחיצה ישירה
+    if (currentCanvasMode == CanvasMode.DELETE) {
+        if (!target.classList.contains("robot-group")) {
+            target.remove();
+            return; // עוצר כאן כדי לא להתחיל גרירה של משהו שנמחק
+        }
+        return;
+    }
+
     if (currentCanvasMode == CanvasMode.PEN) {
         let text = target.querySelector("text");
         if (text) changeColor(text.getAttribute("fill"));
@@ -221,10 +230,6 @@ function selectElement(evt) {
         transform = transforms.getItem(0);
         offset.x -= transform.matrix.e;
         offset.y -= transform.matrix.f;
-    }
-
-    if (currentCanvasMode == CanvasMode.DELETE) {
-        if (!target.classList.contains("robot-group")) target.parentNode.removeChild(target);
     }
 }
 

@@ -14,28 +14,28 @@ fieldCanvas.addEventListener("pointermove", (event) => {
     }
   } else if (currentCanvasMode == CanvasMode.DRAG) {
     if (selectedElement) {
-      event.preventDefault(); // מונע גלילה בטאץ'
+      event.preventDefault(); 
       transform.setTranslate(position.x - offset.x, position.y - offset.y);
     }
   } else if (currentCanvasMode == CanvasMode.PEN) {
     if (currentPenPath) {
-      event.preventDefault(); // מונע גלילה בטאץ' בזמן ציור
+      event.preventDefault(); 
       currentPenPath.setAttribute(
         "points",
         currentPenPath.getAttribute("points") + position.x + " " + position.y + " "
       );
     }
-  } else if (
-    currentCanvasMode == CanvasMode.DELETE &&
-    event.buttons != 0 &&
-    event.target != fieldCanvas
-  ) {
-    if (
-      !event.target.classList.contains("rbot") &&
-      !event.target.classList.contains("bbot") &&
-      !event.target.classList.contains("robot-group")
-    ) {
-      event.target.parentNode.removeChild(event.target);
+  } else if (currentCanvasMode == CanvasMode.DELETE && (event.buttons != 0 || event.pointerType === 'touch')) {
+    // שימוש ב-elementFromPoint כדי למצוא מה נמצא מתחת לאצבע בזמן תנועה
+    let target = document.elementFromPoint(event.clientX, event.clientY);
+    
+    if (target && target !== fieldCanvas && target.id !== "field-background") {
+      // מחיקה רק אם זה לא רובוט וזה נמצא בתוך שכבת הציור או הסטייג'
+      let isRobot = target.closest('.robot-group');
+      if (!isRobot) {
+        // מוחק את האלמנט (חץ, קו או צורה)
+        target.remove();
+      }
     }
   }
 });
