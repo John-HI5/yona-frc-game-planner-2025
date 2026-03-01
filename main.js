@@ -32,7 +32,7 @@ var clickCount = 0;
 var pendingSlot = null;
 const slotCoords = [
     {x: 145, y: 270-27}, {x: 145, y: 490-27}, {x: 145, y: 880-27-27-15},
-    {x: 2350, y: 420-27}, {x: 2350, y: 807-27}, {x: 2350, y: 1040-27}
+    {x: 2350, y: 420-27}, {x: 2350, y: 807-27-27-10}, {x: 2350, y: 1040-27-27-20}
 ];
 
 var currentTabId = 'AUTO';
@@ -58,8 +58,10 @@ window.onload = function () {
     spawnInitialRobots();
     initSlots();
     captureAllTabPositions();
+
+    // Add this line:
+    document.addEventListener('fullscreenchange', resizeCanvas);
 };
-window.onresize = function () { resizeCanvas(); };
 
 // --- פונקציות טעינת לו"ז FRC ---
 
@@ -275,10 +277,19 @@ function switchTab(newTabId) {
 
 function resizeCanvas() {
     const bgRect = background.getBoundingClientRect();
+    
+    // 1. Update SVG size to match the background image
     fieldCanvas.setAttribute("width", bgRect.width);
     fieldCanvas.setAttribute("height", bgRect.height);
+    
+    // 2. Update the ratio for robots
     heightRatio = bgRect.height / 635.0; 
+    
+    // 3. Update Robot sizes
     updateAllRobotSizes(currentRobotSize);
+    
+    // 4. CRITICAL: Re-draw the slots at their new positions
+    initSlots(); 
 }
 
 function spawnInitialRobots() {
