@@ -71,6 +71,9 @@
         stroke-width: 5px;
         filter: drop-shadow(0 0 5px #44ff44);
       }
+      /* Added styling for table inputs to keep sidebar tidy */
+      #team-table input { width: 50px; background: #333; color: white; border: 1px solid #555; border-radius: 3px; }
+      #team-table select { background: #333; color: white; border: 1px solid #555; font-size: 11px; }
     </style>
   </head>
   <body>
@@ -147,14 +150,42 @@
           </tr>
           <tr>
             <td>
-              <input id="b1" type="number" placeholder="Blue 1" value="1" onchange="blueRobots.at(0)?.updateTeamNumber(event)"> 
+              <input id="b1" type="number" value="1" onchange="blueRobots.at(0)?.updateTeamNumber(event)"> 
               <select id="b1d" onchange="blueRobots.at(0)?.updateDriveTrain(event)">
                 <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
               </select>
             </td>
             <td>
-              <input id="r1" type="number" placeholder="Red 1" value="4" onchange="redRobots.at(0)?.updateTeamNumber(event)">
+              <input id="r1" type="number" value="4" onchange="redRobots.at(0)?.updateTeamNumber(event)">
               <select id="r1d" onchange="redRobots.at(0)?.updateDriveTrain(event)">
+                <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="b2" type="number" value="2" onchange="blueRobots.at(1)?.updateTeamNumber(event)"> 
+              <select id="b2d" onchange="blueRobots.at(1)?.updateDriveTrain(event)">
+                <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
+              </select>
+            </td>
+            <td>
+              <input id="r2" type="number" value="5" onchange="redRobots.at(1)?.updateTeamNumber(event)">
+              <select id="r2d" onchange="redRobots.at(1)?.updateDriveTrain(event)">
+                <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="b3" type="number" value="3" onchange="blueRobots.at(2)?.updateTeamNumber(event)"> 
+              <select id="b3d" onchange="blueRobots.at(2)?.updateDriveTrain(event)">
+                <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
+              </select>
+            </td>
+            <td>
+              <input id="r3" type="number" value="6" onchange="redRobots.at(2)?.updateTeamNumber(event)">
+              <select id="r3d" onchange="redRobots.at(2)?.updateDriveTrain(event)">
                 <option value="tank">Tank</option><option value="mecanum">Mecanum</option><option value="swerve" selected>Swerve</option>
               </select>
             </td>
