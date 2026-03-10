@@ -3,6 +3,8 @@ const slotCoords = [
     {x: 2350, y: 420-27}, {x: 2350, y: 807-27-27-10}, {x: 2350, y: 1040-27-27-20}
 ];
 
+// Add this near your other variable declarations
+var robotHomePositions = [];
 
 const fieldCanvas = document.getElementById("field-canvas");
 const stageCanvas = document.getElementById("stage-canvas");
@@ -90,6 +92,36 @@ function handleFileSelect(event) {
         }
     };
     reader.readAsText(file);
+}
+
+
+
+function setCurrentAsDefault() {
+    const bgRect = background.getBoundingClientRect();
+    const allBots = [...redRobots, ...blueRobots];
+
+    // 1. Capture current positions as percentages (so they stay accurate on resize)
+    robotHomePositions = allBots.map(bot => {
+        const matrix = bot.robotElement.parentNode.transform.baseVal.getItem(0).matrix;
+        return { 
+            xPercent: matrix.e / bgRect.width, 
+            yPercent: matrix.f / bgRect.height 
+        };
+    });
+
+    // 2. Update all Tab States so they start here
+    tabNames.forEach(name => {
+        tabStates[name].positions = allBots.map((bot, index) => {
+            return { 
+                x: robotHomePositions[index].xPercent * bgRect.width, 
+                y: robotHomePositions[index].yPercent * bgRect.height 
+            };
+        });
+        // Optional: Clear paths if you want the new default to be a "clean slate"
+        tabStates[name].robotPaths.clear();
+    });
+
+
 }
 
 // 2. פונקציה לשליפת משחק ספציפי מהזיכרון (מופעלת מהכפתור החדש)
@@ -421,13 +453,25 @@ function spawnInitialRobots() {
     const bgRect = background.getBoundingClientRect();
     const width = bgRect.width;
     const height = bgRect.height;
-    const yRatios = [0.23, 0.50, 0.76];
-    const redXRatio = 0.15;            
-    const blueXRatio = 0.85;           
-    allianceColor = Alliance.RED;
-    yRatios.forEach(yRatio => createRobotAt(width * redXRatio, height * yRatio));
-    allianceColor = Alliance.BLUE;
-    yRatios.forEach(yRatio => createRobotAt(width * blueXRatio, height * yRatio));
+
+    // If we haven't set custom defaults, use the original FRC starting lines
+    if (robotHomePositions.length === 0) {
+        const yRatios = [0.23, 0.50, 0.76];
+        const redXRatio = 0.15;            
+        const blueXRatio = 0.85;           
+        
+        allianceColor = Alliance.RED;
+        yRatios.forEach(yRatio => createRobotAt(width * redXRatio, height * yRatio));
+        allianceColor = Alliance.BLUE;
+        yRatios.forEach(yRatio => createRobotAt(width * blueXRatio, height * yRatio));
+    } else {
+        // Use the custom saved positions
+        robotHomePositions.forEach((pos, index) => {
+            // First 3 are Red, last 3 are Blue based on your spawn order
+            allianceColor = (index < 3) ? Alliance.RED : Alliance.BLUE;
+            createRobotAt(pos.xPercent * width, pos.yPercent * height);
+        });
+    }
     setMode(CanvasMode.DRAG);
 }
 
