@@ -8,6 +8,7 @@
     <script defer src="main.js"></script>
     <script defer src="listeners.js"></script>
     <link rel="shortcut icon" href="./assets/logo.svg" />
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
     <style>
       #field-canvas, #field-background, .robot-group, .slot-group {
         touch-action: none;
@@ -224,8 +225,33 @@
 
         <hr style="width: 90%; margin: 10px auto;">
 
+
+
+
+
+
+
+
         
-        
+        <div class="json-sidebar-container">
+            <button onclick="exportProgress()" style="background-color: #2e7d32; color: white; font-weight: bold;">EXPORT PROGRESS</button>
+            
+            <input type="file" id="import-file" style="display: none;" onchange="importProgress(event)">
+            <button onclick="document.getElementById('import-file').click()" style="background-color: #1565c0; color: white; font-weight: bold;">IMPORT PROGRESS</button>
+
+            <hr style="width: 100%; border-color: #444; margin: 10px 0;">
+
+            <input type="file" id="json-upload" accept=".json" style="display: none;" onchange="handleFileSelect(event)">
+            <button id="fullscreen-btn" class="non-active" onclick="toggleFullScreen()" style="font-weight: bold; color: #a1a0a0;">FULLSCREEN</button>
+            <button onclick="document.getElementById('json-upload').click()">UPLOAD SCHEDULE (JSON)</button>
+            <button onclick="loadMatchByNumber()">LOAD MATCH #</button>
+        </div>
+
+
+
+
+
+                
         <div class="json-sidebar-container">
             <input type="file" id="json-upload" accept=".json" style="display: none;" onchange="handleFileSelect(event)">
             <button id="fullscreen-btn" class="non-active" onclick="toggleFullScreen()" style="font-weight: bold; color: #a1a0a0;">FULLSCREEN</button>
@@ -258,6 +284,8 @@
         <span id="version">v- אמא שך</span>
     </div>
 
-    <input type="color" id="robot-color-picker" style="display: none; position: absolute; z-index: 999; width: 40px; height: 40px;">
+    <div id="robot-color-picker-container" style="display: none; position: absolute; z-index: 9999;">
+    <div id="iro-picker"></div>
+    </div>
   </body>
 </html>

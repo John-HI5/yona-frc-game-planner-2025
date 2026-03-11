@@ -10,7 +10,7 @@ const fieldCanvas = document.getElementById("field-canvas");
 const stageCanvas = document.getElementById("stage-canvas");
 const slotsLayer = document.getElementById("slots-layer");
 const background = document.getElementById("field-background");
-const colorPicker = document.getElementById("robot-color-picker");
+const colorPicker = document.getElementById("robot-color-picker-container");
 const timerDisplay = document.getElementById("timer-display");
 
 
@@ -72,7 +72,99 @@ window.onload = function () {
     document.addEventListener('fullscreenchange', resizeCanvas);
 };
 
-// --- פונקציות טעינת לו"ז FRC ---
+// ---save functions ---
+
+
+
+
+
+function exportProgress() {
+    // Create a copy of tabStates to modify for export
+    const exportData = {};
+
+    tabNames.forEach(name => {
+        const state = tabStates[name];
+        exportData[name] = {
+            recordingTime: state.recordingTime,
+            positions: state.positions,
+            // Convert the Map to an Array of [key, value] pairs for JSON
+            robotPaths: Array.from(state.robotPaths.entries()).map(([robot, path]) => {
+                // Store robot by its index or ID so we can relink it on import
+                const robotIndex = [...document.querySelectorAll('.robot-group')].indexOf(robot);
+                return { robotIndex, path };
+            })
+        };
+    });
+
+    const dataStr = JSON.stringify(exportData);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `FRC_Strategy_${new Date().toLocaleDateString()}.json`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+}
+
+
+
+
+
+function importProgress(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            const allBots = [...document.querySelectorAll('.robot-group')];
+
+            tabNames.forEach(name => {
+                if (importedData[name]) {
+                    tabStates[name].recordingTime = importedData[name].recordingTime;
+                    tabStates[name].positions = importedData[name].positions;
+                    
+                    // Rebuild the Map
+                    tabStates[name].robotPaths = new Map();
+                    importedData[name].robotPaths.forEach(item => {
+                        if (allBots[item.robotIndex]) {
+                            tabStates[name].robotPaths.set(allBots[item.robotIndex], item.path);
+                        }
+                    });
+                }
+            });
+
+            // Refresh the current view
+            const currentTab = currentTabId; 
+            currentTabId = ""; // Force a refresh
+            switchTab(currentTab);
+            
+            alert("הכל נטען בהצלחה! יאללה לניצחון");
+        } catch (err) {
+            console.error(err);
+            alert("שגיאה בטעינת הקובץ");
+        }
+    };
+    reader.readAsText(file);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 1. פונקציה לטעינת הקובץ לזיכרון (קורה פעם אחת)
 function handleFileSelect(event) {
@@ -618,7 +710,16 @@ function addImage(xpos, ypos, angle, src, size, parent) {
     parent.appendChild(img);
     return img;
 }
-
+function openColorPicker(x, y) {
+    colorPicker.style.display = "block";
+    
+    // Position it near the click but keep it inside the screen
+    let posX = Math.min(x, window.innerWidth - 220);
+    let posY = Math.min(y, window.innerHeight - 280);
+    
+    colorPicker.style.left = posX + "px";
+    colorPicker.style.top = posY + "px";
+}
 function setMode(mode) {
     currentCanvasMode = mode;
     document.querySelectorAll('#tools button').forEach(b => b.classList.remove("active", "other-active"));
@@ -629,11 +730,27 @@ function setMode(mode) {
 
 function changeColor(c) { selectedColor = c; }
 
-colorPicker.addEventListener("input", (e) => {
+// NEW: Initialize the pro color wheel
+var iroPicker = new iro.ColorPicker("#iro-picker", {
+    width: 180, // Good size for tablet fingers
+    color: "#fff",
+    layout: [
+        { component: iro.ui.Wheel },
+        { component: iro.ui.Slider, options: { sliderType: 'value' } }
+    ]
+});
+
+// NEW: This replaces your old "input" listener
+iroPicker.on('color:change', function(color) {
     if (robotToColor) {
-        let hex = e.target.value;
+        let hex = color.hexString;
+        selectedColor = hex; // Updates your pen/arrow color
+        
         let txt = robotToColor.querySelector("text");
-        if (txt) { txt.setAttribute("fill", hex); txt.style.fill = hex; }
+        if (txt) { 
+            txt.setAttribute("fill", hex); 
+            txt.style.fill = hex; 
+        }
     }
 });
 

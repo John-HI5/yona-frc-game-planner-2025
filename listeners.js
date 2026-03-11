@@ -82,71 +82,138 @@ fieldCanvas.addEventListener("pointermove", (event) => {
   }
 }, { passive: false });
 
+
+
 fieldCanvas.addEventListener("pointerdown", (event) => {
+
   if (!document.getElementById("sidebar").classList.contains("open")) {
+
     var position = getMousePosition(event);
+
     const activeLayer = getActiveLayer();
 
+
+
     if (currentCanvasMode == CanvasMode.PIECE) {
+
       var piece = addImage(position.x, position.y, 0, "25assets/coral.svg", 30 * heightRatio, activeLayer);
+
       makeDragable(piece);
+
     } else if (currentCanvasMode == CanvasMode.ARROW) {
+
       if (currentArrow == null) {
+
         currentArrow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
         currentArrow.setAttribute("stroke", selectedColor);
+
         currentArrow.setAttribute("x1", position.x);
+
         currentArrow.setAttribute("y1", position.y);
+
         currentArrow.setAttribute("x2", position.x);
+
         currentArrow.setAttribute("y2", position.y);
+
         currentArrow.setAttribute("stroke-width", 4);
+
         currentArrow.setAttribute("marker-end", "url(#ah" + selectedColor.replace('#', '') + ")");
+
         activeLayer.appendChild(currentArrow);
+
         makeDragable(currentArrow);
+
       }
+
     } else if (currentCanvasMode == CanvasMode.PEN) {
+
       if (!event.target.closest('.robot-group')) {
+
         currentPenPath = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+
         currentPenPath.setAttribute("stroke", selectedColor);
+
         currentPenPath.setAttribute("fill", "none");
+
         currentPenPath.setAttribute("points", position.x + "," + position.y + " ");
+
         currentPenPath.setAttribute("stroke-width", 4);
+
         currentPenPath.setAttribute("stroke-linecap", "round");
+
         activeLayer.appendChild(currentPenPath);
+
         makeDragable(currentPenPath);
+
       }
+
     }
+
   } else {
+
     document.getElementById("sidebar").classList.replace("open", "closed");
+
     currentPolygon = null;
+
   }
+
+
 
   const now = Date.now();
+
   if (now - lastClickTime > 400) clickCount = 0;
+
   clickCount++;
+
   lastClickTime = now;
 
+
+
   if (event.target === fieldCanvas || event.target.id === "field-background") {
+
       colorPicker.style.display = "none";
+
       if (pendingSlot) {
+
           pendingSlot.classList.remove("slot-active");
+
           pendingSlot = null;
+
       }
+
       if (clickCount === 2) setMode(CanvasMode.DRAG);
+
       if (clickCount === 3) {
+
           clearField();
+
           setMode(CanvasMode.PEN);
+
           clickCount = 0;
+
       }
+
   }
+
 });
 
+
+
 fieldCanvas.addEventListener("pointerup", (event) => {
+
     currentArrow = null;
+
     currentPenPath = null;
+
     // Reset slot dragging
+
     isDraggingSlot = false;
+
     draggedSlotIndex = null;
+
 });
+
 
 function makeDragable(element) {
   element.addEventListener("pointerdown", selectElement);
