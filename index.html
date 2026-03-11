@@ -162,12 +162,13 @@
       <button id="delete-tool" class="non-active" onclick="setMode(CanvasMode.DELETE)" style="background-image: url(icons/delete.svg)"></button>
       <button id="pen" class="non-active" onclick="setMode(CanvasMode.PEN)" style="background-image: url(icons/pen.svg)"></button>
       <button id="arrow-tool" class="non-active" onclick="setMode(CanvasMode.ARROW)" style="background-image: url(icons/arrow.svg)"></button>
+      <button onclick="setCurrentAsDefault()" style="background: #880d0d;">Set Def</button>
       <button id="reset-robots-btn" class="non-active" onclick="resetRobotPositions()" style="font-weight: bold; font-size: 10px; color: #3172e0;">RESET BOTS</button>
       <button id="record-btn" class="non-active" onclick="toggleRecording()" style="font-weight: bold; color: hsl(0, 100%, 63%);">REC</button>
       <button id="play-btn" class="non-active" onclick="toggleReplay()" style="font-weight: bold; color: #44ff44;">PLAY</button>
     </div> 
 
-    
+
     <div id="sidebar" class="closed">
         <h1 style="margin: 10px;">Settings</h1>
         <hr style="width: 90%; margin: auto;">

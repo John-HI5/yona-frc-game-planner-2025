@@ -109,33 +109,7 @@ function undoLastAction() {
 }
 
 
-function setCurrentAsDefault() {
-    const bgRect = background.getBoundingClientRect();
-    const allBots = [...redRobots, ...blueRobots];
 
-    // 1. Capture current positions as percentages (so they stay accurate on resize)
-    robotHomePositions = allBots.map(bot => {
-        const matrix = bot.robotElement.parentNode.transform.baseVal.getItem(0).matrix;
-        return { 
-            xPercent: matrix.e / bgRect.width, 
-            yPercent: matrix.f / bgRect.height 
-        };
-    });
-
-    // 2. Update all Tab States so they start here
-    tabNames.forEach(name => {
-        tabStates[name].positions = allBots.map((bot, index) => {
-            return { 
-                x: robotHomePositions[index].xPercent * bgRect.width, 
-                y: robotHomePositions[index].yPercent * bgRect.height 
-            };
-        });
-        // Optional: Clear paths if you want the new default to be a "clean slate"
-        tabStates[name].robotPaths.clear();
-    });
-
-
-}
 
 // 2. פונקציה לשליפת משחק ספציפי מהזיכרון (מופעלת מהכפתור החדש)
 function loadMatchByNumber() {

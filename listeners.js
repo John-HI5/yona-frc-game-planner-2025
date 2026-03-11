@@ -283,5 +283,4 @@ window.setCurrentAsDefault = function() {
             };
         });
     });
-    alert("המיקומים נשמרו כברירת מחדל!");
 };
