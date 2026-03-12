@@ -579,17 +579,34 @@ function resetRobotPositions() {
     const bgRect = background.getBoundingClientRect();
     const width = bgRect.width;
     const height = bgRect.height;
-    const yRatios = [0.23, 0.50, 0.76];
-    const redXRatio = 0.15;
-    const blueXRatio = 0.85;
-    redRobots.forEach((robot, index) => {
-        const group = robot.robotElement.parentNode;
-        group.transform.baseVal.getItem(0).setTranslate(width * redXRatio, height * yRatios[index]);
-    });
-    blueRobots.forEach((robot, index) => {
-        const group = robot.robotElement.parentNode;
-        group.transform.baseVal.getItem(0).setTranslate(width * blueXRatio, height * yRatios[index]);
-    });
+
+    // Combine robots into one list to match the order in robotHomePositions
+    const allBots = [...redRobots, ...blueRobots];
+
+    if (robotHomePositions.length === allBots.length) {
+        // USE CUSTOM DEFAULTS (from setCurrentAsDefault)
+        allBots.forEach((robot, index) => {
+            const group = robot.robotElement.parentNode;
+            const pos = robotHomePositions[index];
+            group.transform.baseVal.getItem(0).setTranslate(pos.xPercent * width, pos.yPercent * height);
+        });
+    } else {
+        // FALLBACK to original hardcoded ratios if no default is set
+        const yRatios = [0.23, 0.50, 0.76];
+        const redXRatio = 0.15;
+        const blueXRatio = 0.85;
+
+        redRobots.forEach((robot, index) => {
+            const group = robot.robotElement.parentNode;
+            group.transform.baseVal.getItem(0).setTranslate(width * redXRatio, height * yRatios[index]);
+        });
+        blueRobots.forEach((robot, index) => {
+            const group = robot.robotElement.parentNode;
+            group.transform.baseVal.getItem(0).setTranslate(width * blueXRatio, height * yRatios[index]);
+        });
+    }
+
+    // Clear paths and timer logic remains the same
     robotPaths.clear();
     activeRobotTime = 0;
     updateTimer(0);
